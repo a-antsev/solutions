@@ -1,0 +1,26 @@
+﻿<Window x:Class="Solutions.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Solutions.Controls"
+        xmlns:solutions="clr-namespace:Solutions"
+        WindowState="Maximized"
+        Title="Редактор" Name="Window">
+    <Grid>
+        <solutions:GraphCanvas x:Name="GraphCanvas" Background="White" Margin="0,100,0,0"/>
+        <Grid Background="White"  Height="100" VerticalAlignment="Top">
+            <TextBlock FontSize="16" FontWeight="Bold" Foreground="White" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Top" Margin="5" Text="Меню"></TextBlock>
+            <Border BorderBrush="Black" BorderThickness="2" Background="Black" Opacity="0.1"></Border>
+            <controls:CreateGroupButton x:Name="CreateGroupButton" HorizontalAlignment="Left" Text="Добавить группу" Margin="10,30,600,0" Click="CreateGroupButton_Click"></controls:CreateGroupButton>
+            <controls:CreateGroupButton x:Name="GenerateChainButton"  HorizontalAlignment="Left" Text="Обработать граф" Margin="165,30,445,0" Click="GenerateChainButton_Click" ></controls:CreateGroupButton>
+            <ListView Visibility="Hidden" HorizontalAlignment="Right" Name="ChainList" Margin="0,10,10,10" Width="200">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>

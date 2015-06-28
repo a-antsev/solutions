@@ -1,0 +1,247 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Solutions"
+    xmlns:controls="clr-namespace:Solutions.Controls">
+
+    <Style TargetType="{x:Type controls:Node}">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:Node}">
+                    <Grid>
+                        <Border  BorderThickness="2" Width="150" Height="50"
+                                CornerRadius="25" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       Text="{TemplateBinding NodeName}"
+                                       Foreground="Black"
+                                       FontSize="14" 
+                                       FontFamily="Consolas"/>
+                        </Border>
+                        <Image x:Name="ExcelImage" Visibility="Hidden" HorizontalAlignment="Left" Margin="20" Source="../excel_2013.png" Width="15" Height="15"/>
+                        <local:Connector x:Name="RightConnector" HorizontalAlignment="Right"></local:Connector>
+                        <local:Connector x:Name="LeftConnector" HorizontalAlignment="Left"></local:Connector>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="WhiteSmoke"/>
+                        </Trigger>
+                        <Trigger Property="IsTableAdded" Value="True">
+                            <Setter TargetName="ExcelImage" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="DeepSkyBlue"/>
+                        </Trigger>
+                        <Trigger Property="GroupId" Value="1">
+                            <Setter TargetName="LeftConnector" Property="Visibility" Value="Hidden"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate> 
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DeleteConnection" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="White"></Setter>
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Width="50" Height="50" ClipToBounds="True">
+                        <Ellipse x:Name="Ellipse" HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="{TemplateBinding Background}"/>
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Text="Удалить"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="AliceBlue" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="Azure" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:Connection}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:Connection}">
+                    <Canvas Name="Canvas"  DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <Path Name="ConnectionPath"
+                              StrokeThickness="6"
+                              Stroke="Black"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"
+                              SnapsToDevicePixels="True"
+                              Data="{Binding PathGeometry}">
+                        </Path>
+                        <Button Name="DeleteButton" 
+                                Style="{StaticResource DeleteConnection}"
+                                Canvas.Top="{Binding ButtonPosition.Y}"
+                                Canvas.Left="{Binding ButtonPosition.X}"
+                                Visibility="Hidden" Content="Delete"/>
+                    </Canvas>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Value="true" Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}">
+                            <Setter TargetName="ConnectionPath" Property="Stroke" Value="Crimson"/>
+                            <Setter TargetName="DeleteButton" Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="AddNode" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+                        <Rectangle x:Name="Rectangle" RadiusX="5" RadiusY="5" HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="Black" StrokeThickness="2"
+                                   Fill="{TemplateBinding Background}"/>
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Text="{TemplateBinding Content}"
+                            FontWeight="Bold"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="DeepSkyBlue" />
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="DodgerBlue" />
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DeleteNode" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="OrangeRed"></Setter>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+                        <Rectangle x:Name="Rectangle" RadiusX="5" RadiusY="5" HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="OrangeRed" StrokeThickness="2"
+                                   Fill="{TemplateBinding Background}"/>
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Text="{TemplateBinding Content}"
+                            FontWeight="Bold"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Red" />
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="{x:Type controls:Group}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:Group}">
+                    <Grid>
+                        <Border Height="{TemplateBinding Height}" 
+                            Width="200"
+                            Opacity="0.2"
+                            Background="Transparent"
+                            BorderBrush="Black"
+                            BorderThickness="2"
+                            CornerRadius="20">
+                        </Border>
+                        <Button x:Name="PART_AddNode" Style="{StaticResource AddNode}" Content="Добавить вершину" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="30"></Button>
+                        <Button x:Name="PART_DeleteNode" Visibility="Hidden" Content="Удалить вершину" Style="{StaticResource DeleteNode}" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="30"></Button>
+                        <!--<Button x:Name="PART_DeleteGroup" Style="{StaticResource DeleteNode}" Content="Delete Group" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="-75"></Button>-->
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:Connector}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Connector}">
+                    <Ellipse Fill="Black" Width="15" Height="15" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="-5"></Ellipse>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="{x:Type controls:CreateGroupButton}">
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="Width" Value="150"/>
+        <Setter Property="Background" Value="Transparent"/>        
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CreateGroupButton}">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+                        <Rectangle x:Name="Rectangle" RadiusX="5" RadiusY="5" HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="Black" StrokeThickness="2"
+                                   Fill="{TemplateBinding Background}"/>
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Text="{TemplateBinding Text}"
+                            FontWeight="Bold"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="DeepSkyBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="DodgerBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
