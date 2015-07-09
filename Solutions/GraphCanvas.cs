@@ -33,11 +33,11 @@ namespace Solutions
             get { return _positionService ?? (_positionService = new PositionService(this)); }
         }
 
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-            NodeService.ClearSelection();
-        }
+        //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseLeftButtonDown(e);
+        //    NodeService.ClearSelection();
+        //}
 
         //Создание группы
         public void CreateGroup()

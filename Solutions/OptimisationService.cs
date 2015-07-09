@@ -10,30 +10,63 @@ namespace Solutions
     public class OptimisationService
     {
 
-        public Dictionary<string, int> FirstColumn(string filename)
+        public OptimisationService()
         {
-            Application xlsApp = new Application();
+            _values = new List<List<KeyValuePair<string,int>>>();
+        }
 
-            //Displays Excel so you can see what is happening
-            //xlsApp.Visible = true;
-
-            Workbook wb = xlsApp.Workbooks.Open(filename,
-                0, true, 5, "", "", true, XlPlatform.xlWindows, "\t", false, false, 0, true);
-            Sheets sheets = wb.Worksheets;
-            Worksheet ws = (Worksheet)sheets.Item[1];
-
-            Range firstColumn = ws.UsedRange.Columns[1];
-            Range secondColumn = ws.UsedRange.Columns[2];
-            var keys = (Array)firstColumn.Cells.Value;
-            var values = (Array) secondColumn.Cells.Value;
-            var keysArray = keys.OfType<object>().Select(o => o.ToString()).ToArray();
-            var valuesArray = values.OfType<object>().Select(o => (int)o).ToArray();
-            var result = new Dictionary<string, int>();
-            for (int i = 0; i < keysArray.Count(); i++)
+        public List<KeyValuePair<string,int>> GetResult()
+        {
+            List<KeyValuePair<string, int>> list = new List<KeyValuePair<string, int>>();
+            int min = 0;
+            foreach (var val in _values)
             {
-                result.Add(keysArray[i],valuesArray[i]);
+                int sum = 0;
+                foreach (var v in val)
+                {
+                    sum += v.Value;
+                }
+                if (sum > min)
+                {
+                    min = sum;
+                    list = val;
+                }
             }
-            return result;
+            return list;
+        }
+
+        private Dictionary<string, int>[] _dictionaries;
+
+        private int _count;
+
+        public void BruteForce(Dictionary<string,int>[] dictionaries)
+        {
+            _dictionaries = dictionaries;
+            _count = _dictionaries.Length;
+            SumElems(new List<KeyValuePair<string, int>>());
+
+        }
+
+        private List<List<KeyValuePair<string,int>>> _values; 
+
+        private void SumElems(List<KeyValuePair<string,int>> list,int num = 0)
+        { 
+            foreach (var i in _dictionaries[num]) 
+            {
+                list.Add(i);
+                if (num != _count - 1)
+                {                  
+                    SumElems(list, num + 1);
+                    list.Remove(list.Last());
+                }
+                else
+                {
+                    _values.Add(new List<KeyValuePair<string, int>>(list));
+                    list.Remove(list.Last());
+                }
+                
+            }
+            return;
         }
     }
 }

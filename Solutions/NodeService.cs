@@ -29,46 +29,46 @@ namespace Solutions
                 _sourceNode = value;
                 if (value != null)
                 {
-                    SourceSet();
+                    //SourceSet();
                 }
             }
         }
 
-        private void SourceNull()
-        {
-            Group currentGroup = null;
-            foreach (var group in _graphCanvas.Children.OfType<Group>())
-            {
-                if (group.Id == _sourceNode.GroupId)
-                {
-                    currentGroup = group;
-                }
-            }
+        //private void SourceNull()
+        //{
+        //    Group currentGroup = null;
+        //    foreach (var group in _graphCanvas.Children.OfType<Group>())
+        //    {
+        //        if (group.Id == _sourceNode.GroupId)
+        //        {
+        //            currentGroup = group;
+        //        }
+        //    }
 
-            if (currentGroup != null)
-            {
-                currentGroup.AddButton.Visibility = Visibility.Visible;
-                currentGroup.DeleteButton.Visibility = Visibility.Hidden;
-            }
-        }
+        //    if (currentGroup != null)
+        //    {
+        //        currentGroup.AddButton.Visibility = Visibility.Visible;
+        //        currentGroup.DeleteButton.Visibility = Visibility.Hidden;
+        //    }
+        //}
 
-        private void SourceSet()
-        {
-            Group currentGroup = null;
-            foreach (var group in _graphCanvas.Children.OfType<Group>())
-            {
-                if (group.Id == _sourceNode.GroupId)
-                {
-                    currentGroup = group;
-                }
-            }
+        //private void SourceSet()
+        //{
+        //    Group currentGroup = null;
+        //    foreach (var group in _graphCanvas.Children.OfType<Group>())
+        //    {
+        //        if (group.Id == _sourceNode.GroupId)
+        //        {
+        //            currentGroup = group;
+        //        }
+        //    }
 
-            if (currentGroup != null)
-            {
-                currentGroup.AddButton.Visibility = Visibility.Hidden;
-                currentGroup.DeleteButton.Visibility = Visibility.Visible;
-            }
-        }
+        //    if (currentGroup != null)
+        //    {
+        //        currentGroup.AddButton.Visibility = Visibility.Hidden;
+        //        currentGroup.DeleteButton.Visibility = Visibility.Visible;
+        //    }
+        //}
 
         public Connection SelectedConnection { get; set; }
 
@@ -81,10 +81,10 @@ namespace Solutions
                 SelectedConnection = null;
             }
 
-            if (SourceNode != null)
+            if (SourceNode != null && SourceNode.IsEditing == false)
             {
                 SourceNode.IsSelected = false;
-                SourceNull();
+                //SourceNull();
                 SourceNode = null;    
                 
             }      
@@ -113,25 +113,20 @@ namespace Solutions
                 {                 
                     Connection connection = new Connection(SourceNode,node);
                     _graphCanvas.Children.Add(connection);
-                    SourceNode.Children.Add(node);
-                    SourceNode.IsSelected = false;
-                    SourceNull();
-                    SourceNode = null;
+                    SourceNode.Children.Add(node);      
+                    ClearSelection();
                 }
                 else
                 {
                     if (SourceNode.GroupId == node.GroupId && !SourceNode.Equals(node))
                     {
-                        SourceNode.IsSelected = false;
-                        SourceNull();
+                        ClearSelection();
                         SourceNode = node;
                         SourceNode.IsSelected = true;
                     }
                     else
                     {
-                        SourceNode.IsSelected = false;
-                        SourceNull();
-                        SourceNode = null;
+                        ClearSelection();
                     }
                 }
             }

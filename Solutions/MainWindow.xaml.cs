@@ -28,8 +28,6 @@ namespace Solutions
 
         public List<Node> Nodes { get; set; }
 
-        private int p;
-
         private void GenerateChainButton_Click(object sender, RoutedEventArgs e)
         {
             ChainsList.Clear();
@@ -79,7 +77,30 @@ namespace Solutions
 #if DEBUG
             ChainList.Visibility = Visibility.Visible;
 #endif
+            ChainList.Items.Clear();
+            OptimisationService optimisationService = new OptimisationService();
+            Dictionary<string, int>[] dictionaries = new Dictionary<string, int>[GraphCanvas.GroupsCount];
+            foreach (var chain in ResultChains)
+            {
+                for (int j = 0; j < GraphCanvas.GroupsCount; j++)
+                {
+                    dictionaries[j] = chain[j].OptimisationParams;
+                }
+                optimisationService.BruteForce(dictionaries);
+            }
+
+            List<KeyValuePair<string, int>> result = optimisationService.GetResult();
+
+            foreach (var res in result)
+            {
+                ChainList.Items.Add(res.Key);
+            }
         }
+
+        //private void BruteForce()
+        //{
+
+        //}
 
         public void DFS(Node node, List<Node> list)
         {

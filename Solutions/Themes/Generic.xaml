@@ -20,8 +20,9 @@
                                        FontFamily="Consolas"/>
                         </Border>
                         <Image x:Name="ExcelImage" Visibility="Hidden" HorizontalAlignment="Left" Margin="20" Source="../excel_2013.png" Width="15" Height="15"/>
-                        <local:Connector x:Name="RightConnector" HorizontalAlignment="Right"></local:Connector>
-                        <local:Connector x:Name="LeftConnector" HorizontalAlignment="Left"></local:Connector>
+                        
+                        <Ellipse x:Name="LeftConnector" Fill="Black" Width="15" Height="15" HorizontalAlignment="Left" Margin="-5"></Ellipse>
+                        <Ellipse x:Name="RightConnector" Fill="Black" Width="15" Height="15" HorizontalAlignment="Right" Margin="-5"></Ellipse>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -161,12 +162,46 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="Red" />
-                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BlueButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="DodgerBlue"></Setter>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+                        <Rectangle x:Name="Rectangle" RadiusX="5" RadiusY="5" HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="DodgerBlue" StrokeThickness="2"
+                                   Fill="{TemplateBinding Background}"/>
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Text="{TemplateBinding Content}"
+                            FontWeight="Bold"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="RoyalBlue" />
+                            <Setter Property="Foreground" Value="White" />
                         </Trigger>
 
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="OrangeRed" />
-                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Background" Value="CornflowerBlue" />
+                            <Setter Property="Foreground" Value="White" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -188,25 +223,64 @@
                             BorderThickness="2"
                             CornerRadius="20">
                         </Border>
-                        <Button x:Name="PART_AddNode" Style="{StaticResource AddNode}" Content="Добавить вершину" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="30"></Button>
-                        <Button x:Name="PART_DeleteNode" Visibility="Hidden" Content="Удалить вершину" Style="{StaticResource DeleteNode}" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="30"></Button>
-                        <!--<Button x:Name="PART_DeleteGroup" Style="{StaticResource DeleteNode}" Content="Delete Group" Width="150" Height="50" VerticalAlignment="Bottom"  Margin="-75"></Button>-->
+                        <Button x:Name="PART_AddNode" 
+                                Style="{StaticResource AddNode}" 
+                                Content="Добавить вершину" 
+                                Width="150" Height="50" 
+                                Visibility="Visible"
+                                VerticalAlignment="Bottom"  
+                                Margin="30"></Button>
+                        <Button x:Name="PART_DeleteNode" 
+                                Visibility="Hidden" 
+                                Content="Удалить вершину" 
+                                Style="{StaticResource DeleteNode}" 
+                                Width="150" 
+                                Height="50" 
+                                VerticalAlignment="Bottom"  
+                                Margin="0,0,0,30"></Button>
+                        <Button x:Name="PART_ChangeNode" 
+                                Visibility="Hidden" 
+                                Content="Изменить вершину" 
+                                Style="{StaticResource BlueButton}" 
+                                Width="150" 
+                                Height="50" 
+                                VerticalAlignment="Bottom"  
+                                Margin="0,0,0,100"></Button>
+                        <TextBox x:Name="PART_NodeName"
+                                 Background="AliceBlue" 
+                                 BorderThickness="2" 
+                                 Margin="0,0,0,170" 
+                                 BorderBrush="DodgerBlue"
+                                 VerticalAlignment="Bottom"
+                                 Visibility="Hidden"
+                                 Width="150" Height="25"></TextBox>
+                        <Button x:Name="PART_GetExcelButton" 
+                                Visibility="Hidden" 
+                                Content="Выбрать таблицу" 
+                                Style="{StaticResource BlueButton}" 
+                                Width="150" 
+                                Height="50" 
+                                VerticalAlignment="Bottom"  
+                                Margin="0,0,0,100"></Button>
+                        <Button x:Name="PART_OkButton" 
+                                Visibility="Hidden" 
+                                Content="Ок" 
+                                Style="{StaticResource BlueButton}" 
+                                Width="150" 
+                                Height="50" 
+                                VerticalAlignment="Bottom"  
+                                Margin="0,0,0,30"></Button>
                     </Grid>
+                    <!--<ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_AddNode" Property="IsPressed" Value="True">
+                            <Setter TargetName="PART_AddNode" Property="Visibility" Value="Hidden"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>-->
                 </ControlTemplate>
+                
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style TargetType="{x:Type local:Connector}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Connector}">
-                    <Ellipse Fill="Black" Width="15" Height="15" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="-5"></Ellipse>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
 
     <Style TargetType="{x:Type controls:CreateGroupButton}">
         <Setter Property="Height" Value="50"/>

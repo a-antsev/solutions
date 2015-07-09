@@ -25,18 +25,14 @@ namespace Solutions.Controls
         {
             SourceNode = sourceNode;
             SinkNode = sinkNode;
-            LayoutUpdated += OnLayoutUpdated;
-            Loaded += OnLoaded;
-            SourceNode.PropertyChanged +=SourceNode_PropertyChanged;
-            SinkNode.PropertyChanged += SinkNode_PropertyChanged;
-        }
-
-        void SinkNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
             UpdatePathGeometry();
+            //LayoutUpdated += OnLayoutUpdated;
+            Loaded += OnLoaded;
+            SourceNode.PositionPropertyChanged += PositionPropertyChanged;
+            SinkNode.PositionPropertyChanged += PositionPropertyChanged;
         }
 
-        private void SourceNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void PositionPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdatePathGeometry();
         }

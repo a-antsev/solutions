@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace Solutions.Controls
 {
@@ -11,7 +13,7 @@ namespace Solutions.Controls
     {
         static Group()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(Group), new FrameworkPropertyMetadata(typeof(Group)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof (Group), new FrameworkPropertyMetadata(typeof (Group)));
         }
 
         public Group()
@@ -21,10 +23,15 @@ namespace Solutions.Controls
             Loaded += OnLoaded;
         }
 
+        private string _newExcelPath;
+
         public List<Node> Nodes { get; set; }
 
+        public Button ExcelButton { get; set; }
+        public Button OkButton { get; set; }
         public Button AddButton { get; set; }
         public Button DeleteButton { get; set; }
+        public Button ChangeButton { get; set; }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
@@ -32,6 +39,88 @@ namespace Solutions.Controls
             if (AddButton != null) AddButton.Click += AddButtonOnClick;
             DeleteButton = GetTemplateChild("PART_DeleteNode") as Button;
             if (DeleteButton != null) DeleteButton.Click += DeleteButtonOnClick;
+            ChangeButton = GetTemplateChild("PART_ChangeNode") as Button;
+            if (ChangeButton != null) ChangeButton.Click += ChangeButtonOnClick;
+            OkButton = GetTemplateChild("PART_OkButton") as Button;
+            if (OkButton != null) OkButton.Click += OkButtonOnClick;
+            ExcelButton = GetTemplateChild("PART_GetExcelButton") as Button;
+            if (ExcelButton != null) ExcelButton.Click += ExcelButtonOnClick;
+
+        }
+
+        private void ExcelButtonOnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                _newExcelPath = openFileDialog.FileName;
+        }
+
+        private void OkButtonOnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var canvas = VisualTreeHelper.GetParent(this) as GraphCanvas;
+            var nodeName = GetTemplateChild("PART_NodeName") as TextBox;
+            if (canvas != null)
+            {
+                if (canvas.NodeService.SourceNode != null)
+                {
+                    if (_newExcelPath != null)
+                    {
+                        canvas.NodeService.SourceNode.ExcelPath = _newExcelPath;
+                    }              
+                    if (nodeName != null) canvas.NodeService.SourceNode.NodeName = nodeName.Text;
+                    AddButton.Visibility = Visibility.Visible;
+                    OkButton.Visibility = Visibility.Hidden;
+                    ExcelButton.Visibility = Visibility.Hidden;
+                    if (nodeName != null) nodeName.Visibility = Visibility.Hidden;
+                    Height -= 50;
+                    return;
+                }
+            }
+
+            if (_newExcelPath == null)
+            {
+                MessageBox.Show("Не указана таблица Excel", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NodesCount++;
+            Node node = new Node(Id);
+            Canvas.SetTop(node, (NodesCount - 1) * 50 + 50 * NodesCount);
+            double groupLeft = Canvas.GetLeft(this);
+            Canvas.SetLeft(node, groupLeft + 25);
+            if (nodeName != null) node.NodeName = nodeName.Text;
+            if (!string.IsNullOrEmpty(_newExcelPath))
+            {
+                node.ExcelPath = _newExcelPath;
+                _newExcelPath = null;
+            }
+            node.SelectionPropertyChanged += NodeOnSelectionPropertyChanged;
+            Height += 100;
+            if (canvas != null)
+            {
+                canvas.Children.Add(node);
+            }
+            Height -= 120;
+            AddButton.Visibility = Visibility.Visible;
+            OkButton.Visibility = Visibility.Hidden;
+            ExcelButton.Visibility = Visibility.Hidden;
+            if (nodeName != null) nodeName.Visibility = Visibility.Hidden;
+        }
+
+        private void ChangeButtonOnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var canvas = VisualTreeHelper.GetParent(this) as GraphCanvas;
+            if (canvas != null)
+            {
+                canvas.NodeService.SourceNode.IsEditing = true;
+            }
+            AddButton.Visibility = Visibility.Hidden;
+            OkButton.Visibility = Visibility.Visible;
+            ExcelButton.Visibility = Visibility.Visible;
+            var nodeName = GetTemplateChild("PART_NodeName") as TextBox;
+            if (nodeName != null) nodeName.Visibility = Visibility.Visible;
+            Height += 50;
+
         }
 
         private void UpdateNodesPosition()
@@ -84,33 +173,34 @@ namespace Solutions.Controls
                 canvas.Children.Remove(node);
             }
             UpdateNodesPosition();
-            AddButton.Visibility = Visibility.Visible;
-            DeleteButton.Visibility = Visibility.Hidden;
+
         }
 
         private void AddButtonOnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            NodesCount++;
-            Node node = new Node(Id);
-            Canvas.SetTop(node, (NodesCount - 1) * 50 + 50 * NodesCount);
-            double groupLeft = Canvas.GetLeft(this);
-            Canvas.SetLeft(node, groupLeft + 25);
-            CreateNode createNode = new CreateNode();
-            if (createNode.ShowDialog() == true)
-            {
-                node.NodeName = createNode.NodeName.Text;
-                node.ExcelPath = createNode.ExcelPath.Text;
-            }
-            if (!string.IsNullOrEmpty(node.ExcelPath))
-            {
-                node.IsTableAdded = true;
-            }
-            Height += 100;
-            var canvas = VisualTreeHelper.GetParent(this) as GraphCanvas;
+            AddButton.Visibility = Visibility.Hidden;
+            OkButton.Visibility = Visibility.Visible;
+            ExcelButton.Visibility = Visibility.Visible;
+            var nodeName = GetTemplateChild("PART_NodeName") as TextBox;
+            if (nodeName != null) nodeName.Visibility = Visibility.Visible;
+            Height += 120;
+        }
 
-            if (canvas != null)
+        private void NodeOnSelectionPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (AddButton.Visibility == Visibility.Hidden)
             {
-                canvas.Children.Add(node);
+                Height -= 80;
+                AddButton.Visibility = Visibility.Visible;
+                DeleteButton.Visibility = Visibility.Hidden;
+                ChangeButton.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                Height += 80;
+                AddButton.Visibility = Visibility.Hidden;
+                DeleteButton.Visibility = Visibility.Visible;
+                ChangeButton.Visibility = Visibility.Visible;
             }
         }
 

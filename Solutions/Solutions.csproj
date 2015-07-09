@@ -57,10 +57,6 @@
     <Compile Include="Result.xaml.cs">
       <DependentUpon>Result.xaml</DependentUpon>
     </Compile>
-    <Page Include="CreateNode.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,10 +64,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Connector.cs" />
-    <Compile Include="CreateNode.xaml.cs">
-      <DependentUpon>CreateNode.xaml</DependentUpon>
     </Compile>
     <Compile Include="NodeService.cs" />
     <Compile Include="Controls\Connection.cs" />

@@ -14,7 +14,7 @@
             <Border BorderBrush="Black" BorderThickness="2" Background="Black" Opacity="0.1"></Border>
             <controls:CreateGroupButton x:Name="CreateGroupButton" HorizontalAlignment="Left" Text="Добавить группу" Margin="10,30,600,0" Click="CreateGroupButton_Click"></controls:CreateGroupButton>
             <controls:CreateGroupButton x:Name="GenerateChainButton"  HorizontalAlignment="Left" Text="Обработать граф" Margin="165,30,445,0" Click="GenerateChainButton_Click" ></controls:CreateGroupButton>
-            <ListView Visibility="Hidden" HorizontalAlignment="Right" Name="ChainList" Margin="0,10,10,10" Width="200">
+            <ListView Visibility="Visible" HorizontalAlignment="Right" Name="ChainList" Margin="0,10,10,10" Width="200">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn/>

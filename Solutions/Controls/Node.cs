@@ -15,7 +15,7 @@ using Point = System.Windows.Point;
 
 namespace Solutions.Controls
 {
-    public class Node : Control, INotifyPropertyChanged
+    public class Node : Control
     {
         static Node()
         {
@@ -30,6 +30,7 @@ namespace Solutions.Controls
         public Node(int groupId)
         {
             GroupId = groupId;
+            IsEditing = false;
             Children = new List<Node>();
             Loaded += OnLoaded;
         }
@@ -49,6 +50,7 @@ namespace Solutions.Controls
             }
         }
 
+        public bool IsEditing { get; set; }
 
         private Point _position;
 
@@ -58,7 +60,7 @@ namespace Solutions.Controls
             set
             {
                 _position = value;
-                OnPropertyChanged("Position");
+                OnPositionPropertyChanged("Position");
             }
         }
 
@@ -76,6 +78,7 @@ namespace Solutions.Controls
             get { return _excelPath; }
             set
             {
+                IsTableAdded = true;
                 _excelPath = value;
                 OptimisationParams = SelectData(value);
                 GC.Collect();
@@ -92,13 +95,16 @@ namespace Solutions.Controls
 
         public static readonly DependencyProperty IsTableAddedProperty =
             DependencyProperty.Register("IsTableAdded", typeof(bool), typeof(Node));
-
         
         
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
-            set { SetValue(IsSelectedProperty, value); }
+            set
+            {
+                SetValue(IsSelectedProperty, value); 
+                OnSelectionPropertyChanged("IsSelected");
+            }
         }
 
         public static readonly DependencyProperty IsSelectedProperty =
@@ -131,7 +137,14 @@ namespace Solutions.Controls
 
             if (canvas != null)
             {
-                canvas.NodeService.Connect(this);
+                if (!IsEditing)
+                {
+                    canvas.NodeService.Connect(this);
+                }
+                else
+                {
+                    MessageBox.Show("Идет редактирование", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
 
             e.Handled = true;
@@ -165,13 +178,21 @@ namespace Solutions.Controls
             return result;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler SelectionPropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnSelectionPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
+            var handler = SelectionPropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public event PropertyChangedEventHandler PositionPropertyChanged;
+
+        protected virtual void OnPositionPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PositionPropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 }
